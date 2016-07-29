@@ -192,7 +192,7 @@ public extension UIView {
      @param completion The completion closure, executed after the toast view disappears.
             didTap will be `true` if the toast view was dismissed from a tap.
      */
-    public func makeToast(message: String?, duration: NSTimeInterval, position: CGPoint, title: String?, image: UIImage?, style: ToastStyle?, completion: ((didTap: Bool) -> Void)?) {
+    public func makeToast(message: String?, duration: NSTimeInterval, position: CGPoint, title: String?, image: UIImage?, style: ToastStyle?, completion: ((didTap: Bool) -> Void)?) -> UIView? {
         var toastStyle = ToastManager.shared.style
         if let style = style {
             toastStyle = style
@@ -201,9 +201,11 @@ public extension UIView {
         do {
             let toast = try self.toastViewForMessage(message, title: title, image: image, style: toastStyle)
             self.showToast(toast, duration: duration, position: position, completion: completion)
+            return toast
         } catch ToastError.InsufficientData {
             print("Error: message, title, and image cannot all be nil")
         } catch {}
+        return nil
     }
     
     // MARK: - Show Toast Methods
@@ -382,7 +384,7 @@ public extension UIView {
         }
     }
     
-    private func hideToast(toast: UIView) {
+    public func hideToast(toast: UIView) {
         self.hideToast(toast, fromTap: false)
     }
     
